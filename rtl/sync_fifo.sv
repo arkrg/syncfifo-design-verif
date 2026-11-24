@@ -1,17 +1,16 @@
-/*
-* sync write/sync read
-*
-*
-*
-*/
-
 module sync_fifo #(
     parameter int WIDTH_DATA = 8,
     parameter int DEPTH_FIFO = 16,
     parameter int WIDTH_ADDR = $clog2(DEPTH_FIFO)
 ) (
-    input         clk,
-          fifo_if _if
+    input                   clk,
+    input                   rstn,
+    input                   cmd_push,
+    input                   cmd_pop,
+    input  [WIDTH_DATA-1:0] data_push,
+    output [WIDTH_DATA-1:0] data_pop,
+    output                  flag_empty,
+    output                  flag_full
 );
   wire [WIDTH_ADDR-1:0] addr_write, addr_read;
   wire enable_write;
@@ -20,26 +19,13 @@ module sync_fifo #(
       .WIDTH_DATA(WIDTH_DATA),
       .DEPTH_FIFO(DEPTH_FIFO)
   ) u_controller (
-      .clk,
-      .rstn      (_if.rstn),
-      .cmd_push  (_if.cmd_push),
-      .cmd_pop   (_if.cmd_pop),
-      .addr_write,
-      .addr_read,
-      .flag_empty(_if.flag_empty),
-      .flag_full (_if.flag_full),
-      .enable_write
+      .*
   );
   sync_fifo_buffer #(
       .WIDTH_DATA(WIDTH_DATA),
       .DEPTH_FIFO(DEPTH_FIFO)
   ) u_buffer (
-      .clk,
-      .enable_write,
-      .addr_write,
-      .addr_read,
-      .data_push(_if.data_push),
-      .data_pop (_if.data_pop)
+      .*
   );
 endmodule
 
